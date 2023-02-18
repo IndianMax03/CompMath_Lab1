@@ -38,7 +38,6 @@ public class Terminal {
         System.out.println("\nYour matrix: " + matrixData);
         MatrixSolver matrixSolver = new MatrixSolver(matrixData);
         matrixSolver.solve();
-        scanner.close();
     }
 
     public void refresh() {
