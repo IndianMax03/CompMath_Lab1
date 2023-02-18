@@ -2,8 +2,6 @@ package data;
 
 import exceptions.WrongDataException;
 
-import java.util.ArrayList;
-
 public class MatrixData {
     private final int DIMENSION;
     private final int EXTENDED_DIMENSION;
@@ -57,15 +55,15 @@ public class MatrixData {
                 if (row == column) continue;
                 if (column == EXTENDED_DIMENSION - 1) {
                     if (normedMatrix[row][column] >= 0) {
-                        builder.append(" + ").append(matrix[row][column]);
+                        builder.append(" +").append(matrix[row][column]);
                     } else {
-                        builder.append(normedMatrix[row][column]);
+                        builder.append(" ").append(normedMatrix[row][column]);
                     }
                     continue;
                 }
                 if (!firstAppending) {
                     if (normedMatrix[row][column] >= 0) {
-                        builder.append(" + ").append(matrix[row][column]).append("*x_").append(column + 1);
+                        builder.append(" +").append(matrix[row][column]).append("*x_").append(column + 1);
                     } else {
                         builder.append(" ").append(normedMatrix[row][column]).append("*x_").append(column + 1);
                     }
@@ -90,9 +88,9 @@ public class MatrixData {
                     break;
                 }
                 if (matrix[i][j] >= 0 && j != 0) {
-                    builder.append(" + ").append(matrix[i][j]).append("*x_").append(j + 1);
+                    builder.append(" +").append(matrix[i][j]).append("*x_").append(j + 1);
                 } else {
-                    builder.append(matrix[i][j]).append("*x_").append(j + 1);
+                    builder.append(" ").append(matrix[i][j]).append("*x_").append(j + 1);
                 }
             }
         }

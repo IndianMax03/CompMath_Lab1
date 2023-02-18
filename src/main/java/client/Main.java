@@ -1,7 +1,5 @@
 package client;
 
-import data.MatrixData;
-
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -10,7 +8,6 @@ public class Main {
     public static void main(String[] args) {
         try {
             Terminal terminal = new Terminal();
-            ;
             while (true) {
                 terminal.refresh();
                 terminal.start();

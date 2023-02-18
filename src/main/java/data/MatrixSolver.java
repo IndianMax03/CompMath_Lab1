@@ -1,10 +1,8 @@
 package data;
 
-import java.util.Arrays;
-
 public class MatrixSolver {
 
-    private MatrixData matrixData;
+    private final MatrixData matrixData;
 
     public MatrixSolver(MatrixData matrixData) {
         this.matrixData = matrixData;
@@ -27,11 +25,7 @@ public class MatrixSolver {
         }
         createNormedMatrix();
         System.out.println(matrixData.normedMatrixToString());
-        try {
-            iterate();
-        } catch (ArrayIndexOutOfBoundsException exception) {
-            System.out.println("Algorithm cannot solve system by less then 100 steps");
-        }
+        iterate();
     }
 
 
@@ -82,7 +76,10 @@ public class MatrixSolver {
         int dimension = matrixData.getDIMENSION();
         int exDimension = matrixData.getEXTENDED_DIMENSION();
         double epsilon = matrixData.getEPSILON();
-        double rounder = (10 / epsilon / epsilon / epsilon);
+        double rounder = 100;
+        if (epsilon < 1) {
+            rounder = (10 / epsilon / epsilon / epsilon);
+        }
         for (int row = 0; row < dimension; row++) {
             double diagonalElement = matrix[row][row];
             for (int column = 0; column < exDimension; column++) {
@@ -104,8 +101,15 @@ public class MatrixSolver {
         int dimension = matrixData.getDIMENSION();
         int exDimension = matrixData.getEXTENDED_DIMENSION();
         double epsilon = matrixData.getEPSILON();
-        double rounder = (10 / epsilon / epsilon / epsilon);
-        Double[][] iterations = new Double[100][exDimension];
+        double rounder = 100;
+        if (epsilon < 1) {
+            rounder = (10 / epsilon / epsilon / epsilon);
+        }
+        int maxIterationsNumber = (int) (100 * epsilon);
+        if (epsilon < 1) {
+            maxIterationsNumber = (int) (100 / epsilon);
+        }
+        Double[][] iterations = new Double[maxIterationsNumber][exDimension];
         for (int row = 0; row < dimension; row++) {
             iterations[k][row] = (Math.round(normedMatrix[row][dimension] * rounder) / rounder);
         }
@@ -115,37 +119,42 @@ public class MatrixSolver {
         for (int column = 0; column < dimension; column++) {
             iterations[k][column] = iterations[k - 1][column];
         }
-
-        while (true) {
-            for (int row = 0; row < dimension; row++) {
-                double sum = 0;
-                for (int column = 0; column < exDimension; column++) {
-                    if (column == row) continue;
-                    if (column == dimension) {
-                        sum += Math.round(normedMatrix[row][column] * rounder) / rounder;
-                        break;
+        try {
+            while (true) {
+                for (int row = 0; row < dimension; row++) {
+                    double sum = 0;
+                    for (int column = 0; column < exDimension; column++) {
+                        if (column == row) continue;
+                        if (column == dimension) {
+                            sum += Math.round(normedMatrix[row][column] * rounder) / rounder;
+                            break;
+                        }
+                        sum += Math.round(normedMatrix[row][column] * iterations[k][column] * rounder) / rounder;
                     }
-                    sum += Math.round(normedMatrix[row][column] * iterations[k][column] * rounder) / rounder;
+                    iterations[k][row] = (Math.round(sum * rounder) / rounder);
                 }
-                iterations[k][row] = (Math.round(sum * rounder) / rounder);
-            }
-            double maxAccuracy = Math.abs(iterations[k][0] - iterations[k - 1][0]);
-            for (int column = 0; column < dimension; column++) {
-                if (Math.abs(iterations[k][column] - iterations[k - 1][column]) > maxAccuracy) {
-                    maxAccuracy = Math.abs(Math.round((iterations[k][column] - iterations[k - 1][column]) * rounder) / rounder);
+                double maxAccuracy = Math.abs(iterations[k][0] - iterations[k - 1][0]);
+                for (int column = 0; column < dimension; column++) {
+                    if (Math.abs(iterations[k][column] - iterations[k - 1][column]) > maxAccuracy) {
+                        maxAccuracy = Math.abs(Math.round((iterations[k][column] - iterations[k - 1][column]) * rounder) / rounder);
+                    }
+                }
+                iterations[k][exDimension - 1] = (Math.round(maxAccuracy * rounder) / rounder);
+                k += 1;
+                if (maxAccuracy < epsilon) {
+                    break;
+                }
+                for (int column = 0; column < dimension; column++) {
+                    iterations[k][column] = iterations[k - 1][column];
                 }
             }
-            iterations[k][exDimension - 1] = (Math.round(maxAccuracy * rounder) / rounder);
-            k += 1;
-            if (maxAccuracy < epsilon) {
-                break;
-            }
-            for (int column = 0; column < dimension; column++) {
-                iterations[k][column] = iterations[k - 1][column];
-            }
+        } catch (ArrayIndexOutOfBoundsException exception) {
+            System.out.println("The algorithm cannot solve system by " + k + " iterations. Try other data.");
+            System.out.println();
+            return;
         }
 
-        System.out.println("There is " + k + " iterations:");
+        System.out.println("There is " + k + " (max= " + maxIterationsNumber + ") iterations ");
         for (int row = 0; row < k; row++) {
             if (row == 0) {
                 System.out.print("N| ");

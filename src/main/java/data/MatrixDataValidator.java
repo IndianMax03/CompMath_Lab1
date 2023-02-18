@@ -7,7 +7,6 @@ public class MatrixDataValidator {
     private static MatrixDataValidator instance;
     private static final int MAX_DIMENSION = 21;
     private static final int MIN_DIMENSION = 0;
-    private static final int MAX_EPSILON = 1;
     private static final int MIN_EPSILON = 0;
 
     private MatrixDataValidator() {
@@ -40,8 +39,8 @@ public class MatrixDataValidator {
         try {
             epsilonValue = Double.parseDouble(epsilon.replaceAll(",", "."));
 
-            if (!(epsilonValue > MIN_EPSILON && epsilonValue < MAX_EPSILON)) {
-                throw new WrongDataException("Epsilon should be between: " + MIN_EPSILON + " and " + MAX_EPSILON);
+            if (!(epsilonValue > MIN_EPSILON)) {
+                throw new WrongDataException("Epsilon should be higher than: " + MIN_EPSILON);
             }
             return epsilonValue;
 
