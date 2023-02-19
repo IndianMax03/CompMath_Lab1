@@ -1,5 +1,7 @@
 package data;
 
+import java.util.Scanner;
+
 public class MatrixSolver {
 
     private final MatrixData matrixData;
@@ -25,7 +27,11 @@ public class MatrixSolver {
         }
         createNormedMatrix();
         System.out.println(matrixData.normedMatrixToString());
-        iterate();
+        try {
+            iterate();
+        } catch (OutOfMemoryError error) {
+            System.out.println("Memory ran out. Try to fix accuracy value.");
+        }
     }
 
 
@@ -150,8 +156,13 @@ public class MatrixSolver {
             }
         } catch (ArrayIndexOutOfBoundsException exception) {
             System.out.println("The algorithm cannot solve system by " + k + " iterations. Try other data.");
-            System.out.println();
-            return;
+            System.out.print("Would you like to see first 20 iterations to correct your accuracy? (y/n)\n>");
+            String ans = new Scanner(System.in).nextLine().trim();
+            if (!ans.equals("y")) {
+                return;
+            } else {
+                k = 20;
+            }
         }
 
         System.out.println("There is " + k + " (max= " + maxIterationsNumber + ") iterations ");
