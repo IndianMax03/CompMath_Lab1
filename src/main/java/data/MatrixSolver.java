@@ -165,7 +165,7 @@ public class MatrixSolver {
             }
         }
 
-        System.out.println("There is " + k + " (max= " + maxIterationsNumber + ") iterations ");
+        System.out.println("There is " + k + " (max=" + maxIterationsNumber + ") iterations:");
         for (int row = 0; row < k; row++) {
             if (row == 0) {
                 System.out.print("N| ");
